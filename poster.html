@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>QR poster · A5</title>
+<style>
+  /* A5 print poster. Open this page, then Print → Save as PDF (A5, margins none, background graphics on),
+     or run: node tools/make-poster.js. ?src=whatsapp|maps|card|status makes variants that track their own source. */
+  @page { size: A5; margin: 0; }
+  :root { --ink:#1C1C1E; --muted:#5C5C62; --accent:#0062CC; --red:#C4170C; --bg:#F2F2F7; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Inter", "Noto Sans Devanagari", Roboto, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .sheet { width: 148mm; height: 210mm; margin: 0 auto; padding: 11mm 11mm 9mm; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .mono { width: 16mm; height: 16mm; border-radius: 4.5mm; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 9mm; }
+  h1 { font-size: 7.4mm; line-height: 1.12; margin: 4mm 0 0; letter-spacing: -.02em; }
+  .mr { font-size: 5.2mm; color: var(--muted); margin: 1mm 0 0; font-weight: 600; }
+  .cta { margin-top: 5mm; background: var(--bg); border-radius: 6mm; padding: 5mm 6mm 4mm; width: 100%; }
+  .cta b { display: block; font-size: 7mm; letter-spacing: -.01em; }
+  .cta span { display: block; font-size: 6mm; font-weight: 700; color: var(--accent); margin-top: 1mm; }
+  .qr { margin-top: 4mm; background: #fff; padding: 3mm; border-radius: 3mm; }
+  .qr svg { width: 60mm; height: 60mm; display: block; }
+  .url { font-size: 3.2mm; color: var(--muted); margin-top: 2mm; word-break: break-all; }
+  .steps { display: flex; gap: 3mm; justify-content: center; margin-top: 4mm; font-size: 3.6mm; color: var(--muted); }
+  .steps i { font-style: normal; display: inline-grid; place-items: center; width: 5mm; height: 5mm; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 700; font-size: 3mm; margin-right: 1mm; }
+  .emerg { margin-top: auto; width: 100%; border: .5mm solid #F3C3BF; background: #FFF4F3; border-radius: 4mm; padding: 3mm 4mm; color: var(--red); }
+  .emerg b { font-size: 4.3mm; display: block; }
+  .emerg span { font-size: 3.8mm; color: var(--ink); display: block; margin-top: .6mm; }
+  .phone { font-size: 6.4mm; font-weight: 800; margin-top: 3mm; letter-spacing: .01em; }
+  .foot { font-size: 2.7mm; color: #8E8E93; margin-top: 2mm; }
+  @media screen { body { background: #ddd; padding: 16px 0; } .sheet { background: #fff; box-shadow: 0 10px 40px rgba(0,0,0,.15); } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="mono">K</div>
+  <h1 id="name">Kadam Hospital<br>Accident &amp; Orthopedic</h1>
+  <p class="mr">कदम हॉस्पिटल · श्रीरामपूर</p>
+  <div class="cta"><b>Scan to book your appointment</b><span lang="mr">अपॉइंटमेंट बुक करण्यासाठी स्कॅन करा</span>
+    <div class="qr" id="qr" style="display:inline-block"></div>
+    <div class="url" id="url"></div>
+  </div>
+  <div class="steps"><span><i>1</i>Scan · स्कॅन</span><span><i>2</i>Pick a time · वेळ निवडा</span><span><i>3</i>Get your token · टोकन</span></div>
+  <div class="emerg"><b>Accident or emergency? Come directly · Open 24 hrs</b><span lang="mr">अपघात किंवा आपत्कालीन स्थिती? थेट या, २४ तास सुरू.</span></div>
+  <div class="phone" id="phone">+91 90110 22349</div>
+  <div class="foot">Online booking demo by CareFlow</div>
+</div>
+<script src="js/config.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/vendor/qrcode-generator-1.4.4.min.js"></script>
+<script>
+  const src = (new URLSearchParams(location.search).get('src') || 'poster').replace(/[^a-z]/g, '');
+  const base = (new URLSearchParams(location.search).get('url') || CF_CONFIG.PUBLIC_URL).replace(/\/$/, '');
+  const target = `${base}/?t=${CF_CONFIG.TENANT_SLUG}&src=${src}`;
+  const q = qrcode(0, 'Q'); q.addData(target); q.make();
+  document.getElementById('qr').innerHTML = q.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+  document.getElementById('url').textContent = target.replace(/^https?:\/\//, '');
+  document.getElementById('phone').textContent = CF_SEED.tenant.config.phone;
+</script>
+</body>
+</html>

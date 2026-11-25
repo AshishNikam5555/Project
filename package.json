@@ -1,0 +1,14 @@
+{
+  "name": "kadam-booking",
+  "private": true,
+  "description": "CareFlow online booking — Kadam Hospital pilot (static site + Supabase)",
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "test:db": "bash supabase/tests/run_local.sh",
+    "test:notify": "node --experimental-strip-types --no-warnings --test tests/notify.test.ts",
+    "test:e2e": "node tests/e2e.js http://localhost:8080",
+    "seed": "node tools/gen-seed-sql.js",
+    "i18n": "node tools/export-i18n.js",
+    "poster": "node tools/make-poster.js"
+  }
+}
