@@ -10,14 +10,14 @@ It is a static site (HTML, CSS, vanilla JS) on **Supabase** (Postgres, Row Level
 
 The website loads **no frameworks**: these are development tools only and never ship to patients.
 
-| Tool              | Used for                                                                                | Command                                                          |
-| ----------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Supabase CLI      | link project, push migrations, seed, deploy the WhatsApp function, local stack (Docker) | `npm run db:link`, `db:push`, `db:seed`, `fn:deploy`, `db:start` |
-| Netlify CLI       | preview and production deploys                                                          | `npm run deploy:preview`, `npm run deploy`                       |
-| Playwright        | end-to-end tests, poster PDF/PNG                                                        | `npm run test:e2e`, `npm run poster`                             |
-| ESLint + Prettier | catch mistakes, consistent formatting                                                   | `npm run lint`, `npm run format`                                 |
+| Tool                                       | Used for                                                                                | Command                                                          |
+| ------------------------------------------ | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Supabase CLI                               | link project, push migrations, seed, deploy the WhatsApp function, local stack (Docker) | `npm run db:link`, `db:push`, `db:seed`, `fn:deploy`, `db:start` |
+| Netlify CLI (run via `npx`, not installed) | preview and production deploys                                                          | `npm run deploy:preview`, `npm run deploy`                       |
+| Playwright                                 | end-to-end tests, poster PDF/PNG                                                        | `npm run test:e2e`, `npm run poster`                             |
+| ESLint + Prettier                          | catch mistakes, consistent formatting                                                   | `npm run lint`, `npm run format`                                 |
 
-Quick start on a laptop (Node 22.6+, Python 3):
+Quick start on a laptop (Node 22.6+; works on Windows, macOS, Linux):
 
 ```bash
 npm install
@@ -26,6 +26,11 @@ npm run dev
 ```
 
 Then open http://localhost:8080. Run `npm test` for lint, alert unit tests and the Postgres security tests (needs local Postgres).
+
+Notes:
+
+- Don't run `npm audit fix --force`: it downgrades tools by several major versions and breaks them. `npm audit` should report 0 vulnerabilities; if it reports some, they're inside dev tools, which never ship to patients.
+- Netlify CLI isn't installed with the project (it's about 400 MB and pulls in many old packages); the deploy scripts download it on demand with `npx`.
 
 ## Two modes
 
@@ -122,7 +127,7 @@ Later templates: `booking_confirmed_patient` (only to patients who consented) an
 
 The end-to-end test covers: booking, token, QR, live staff update, masked WhatsApp alert preview, double-booking blocked, check-in, patient lookup and cancel, wrong mobile reveals nothing, token scan, calendar, and leave days closing booking.
 
-`test:db` needs local Postgres binaries (`initdb`, `pg_ctl`). It uses a throwaway database and a small stub of Supabase's `auth` schema and roles (`supabase/tests/_local_supabase_stub.sql`). Never run that stub on Supabase.
+`test:db` needs local Postgres binaries (`initdb`, `pg_ctl`). It uses a throwaway database and a small stub of Supabase's `auth` schema and roles (`supabase/tests/_local_supabase_stub.sql`). Never run that stub on Supabase. On Windows, run it from WSL or Git Bash; everything else works in a normal Command Prompt.
 
 **Still to test by hand on real devices:** QR scanning in normal light, magic-link login, a WhatsApp message arriving within ~10 seconds, and Realtime across two phones. These need the live Supabase project.
 

@@ -3,8 +3,8 @@
   "private": true,
   "description": "CareFlow online booking — Kadam Hospital pilot (static site + Supabase)",
   "scripts": {
-    "dev": "python3 -m http.server 8080",
-    "serve": "python3 -m http.server 8080",
+    "dev": "node tools/serve.js",
+    "serve": "node tools/serve.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -23,14 +23,13 @@
     "db:reset": "node tools/gen-seed-sql.js && supabase db reset",
     "fn:serve": "supabase functions serve notify-whatsapp",
     "fn:deploy": "supabase functions deploy notify-whatsapp --no-verify-jwt",
-    "deploy:preview": "netlify deploy --dir .",
-    "deploy": "netlify deploy --prod --dir ."
+    "deploy:preview": "npx -y netlify-cli@27 deploy --dir .",
+    "deploy": "npx -y netlify-cli@27 deploy --prod --dir ."
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.15.0",
     "globals": "^17.14.0",
-    "netlify-cli": "^27.20.1",
     "playwright": "1.63.0",
     "prettier": "^3.10.1",
     "supabase": "^3.4.0"
