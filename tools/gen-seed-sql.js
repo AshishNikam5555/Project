@@ -5,9 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const seed = require('../js/seed.js');
 
-const q = v => v === null || v === undefined ? 'null'
-  : typeof v === 'number' || typeof v === 'boolean' ? String(v)
-  : `'${String(v).replace(/'/g, "''")}'`;
+const q = v => (v === null || v === undefined ? 'null' : typeof v === 'number' || typeof v === 'boolean' ? String(v) : `'${String(v).replace(/'/g, "''")}'`);
 const j = v => `${q(JSON.stringify(v))}::jsonb`;
 const t = { ...seed.tenant, private_config: { notify_whatsapp: (process.env.ADMIN_WHATSAPP || '+918668859522').split(',') } };
 const out = [];
@@ -28,11 +26,14 @@ for (const s of seed.services) {
   out.push(`insert into public.services (id, tenant_id, category_id, name, name_mr, duration_min, kind, bookable, active, sort)
   values (${[s.id, t.id, s.category_id, s.name, s.name_mr, s.duration_min, s.kind, s.bookable, s.active, s.sort].map(q).join(', ')})
   on conflict (id) do update set name = excluded.name, name_mr = excluded.name_mr, kind = excluded.kind, bookable = excluded.bookable, active = excluded.active;`);
-  for (const d of s.doctor_ids) out.push(`insert into public.doctor_services (tenant_id, doctor_id, service_id) values (${q(t.id)}, ${q(d)}, ${q(s.id)}) on conflict do nothing;`);
+  for (const d of s.doctor_ids)
+    out.push(`insert into public.doctor_services (tenant_id, doctor_id, service_id) values (${q(t.id)}, ${q(d)}, ${q(s.id)}) on conflict do nothing;`);
 }
 out.push(`delete from public.availability where tenant_id = ${q(t.id)};`);
 for (const a of seed.availability) {
-  out.push(`insert into public.availability (tenant_id, doctor_id, weekday, start_time, end_time, slot_min) values (${[t.id, a.doctor_id, a.weekday, a.start_time, a.end_time, a.slot_min].map(q).join(', ')});`);
+  out.push(
+    `insert into public.availability (tenant_id, doctor_id, weekday, start_time, end_time, slot_min) values (${[t.id, a.doctor_id, a.weekday, a.start_time, a.end_time, a.slot_min].map(q).join(', ')});`
+  );
 }
 out.push('commit;', '');
 fs.writeFileSync(path.join(__dirname, '..', 'supabase', 'seed.sql'), out.join('\n'));

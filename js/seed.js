@@ -8,8 +8,11 @@
   const cat = n => 'a0000000-0000-4000-8000-0000000002' + String(n).padStart(2, '0');
   const svc = n => 'a0000000-0000-4000-8000-0000000003' + String(n).padStart(2, '0');
 
-  const OPD = [['10:00', '14:00'], ['17:00', '20:00']]; // [CONFIRM] example hours
-  const DAYS = [1, 2, 3, 4, 5, 6];                       // Mon–Sat, Sunday OPD closed
+  const OPD = [
+    ['10:00', '14:00'],
+    ['17:00', '20:00']
+  ]; // [CONFIRM] example hours
+  const DAYS = [1, 2, 3, 4, 5, 6]; // Mon–Sat, Sunday OPD closed
 
   const seed = {
     tenant: {
@@ -58,10 +61,34 @@
       }
     },
     doctors: [
-      { id: D1, name: 'Dr. Kadam', name_mr: 'डॉ. कदम', role: 'Orthopaedic & Trauma Surgeon (Chief)', role_mr: 'अस्थिरोग व ट्रॉमा सर्जन (मुख्य)',
-        qualification: null, experience_years: null, photo_url: null, fee_inr: null, active: true, sort: 1, confirm: true },
-      { id: D2, name: 'Physiotherapy Team', name_mr: 'फिजिओथेरपी विभाग', role: 'Physiotherapy & Rehabilitation', role_mr: 'फिजिओथेरपी व पुनर्वसन',
-        qualification: null, experience_years: null, photo_url: null, fee_inr: null, active: true, sort: 2, confirm: true }
+      {
+        id: D1,
+        name: 'Dr. Kadam',
+        name_mr: 'डॉ. कदम',
+        role: 'Orthopaedic & Trauma Surgeon (Chief)',
+        role_mr: 'अस्थिरोग व ट्रॉमा सर्जन (मुख्य)',
+        qualification: null,
+        experience_years: null,
+        photo_url: null,
+        fee_inr: null,
+        active: true,
+        sort: 1,
+        confirm: true
+      },
+      {
+        id: D2,
+        name: 'Physiotherapy Team',
+        name_mr: 'फिजिओथेरपी विभाग',
+        role: 'Physiotherapy & Rehabilitation',
+        role_mr: 'फिजिओथेरपी व पुनर्वसन',
+        qualification: null,
+        experience_years: null,
+        photo_url: null,
+        fee_inr: null,
+        active: true,
+        sort: 2,
+        confirm: true
+      }
     ],
     categories: [
       { id: cat(1), name: 'Accident & Trauma', name_mr: 'अपघात व ट्रॉमा', sort: 1, icon: 'siren' },
@@ -91,9 +118,16 @@
       [17, 5, 'Digital X-Ray', 'डिजिटल एक्स-रे', { bookable: false, walkin: true }],
       [18, 5, 'Diagnostic & Pathology Tests', 'निदान व पॅथॉलॉजी तपासण्या', { bookable: false, walkin: true }]
     ].map(([n, c, name, name_mr, o = {}]) => ({
-      id: svc(n), category_id: cat(c), name, name_mr, duration_min: 15,
-      bookable: o.bookable !== false, active: o.active !== false, sort: n,
-      kind: o.emergency ? 'emergency' : o.walkin ? 'walkin' : 'appointment', confirm: !!o.confirm,
+      id: svc(n),
+      category_id: cat(c),
+      name,
+      name_mr,
+      duration_min: 15,
+      bookable: o.bookable !== false,
+      active: o.active !== false,
+      sort: n,
+      kind: o.emergency ? 'emergency' : o.walkin ? 'walkin' : 'appointment',
+      confirm: !!o.confirm,
       doctor_ids: o.bookable === false ? [] : [o.doctor === 2 ? D2 : D1]
     })),
     availability: [D1, D2].flatMap(d => DAYS.flatMap(w => OPD.map(([s, e]) => ({ doctor_id: d, weekday: w, start_time: s, end_time: e, slot_min: 15 })))),

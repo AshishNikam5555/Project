@@ -1,0 +1,7 @@
+node_modules/
+js/vendor/
+assets/
+supabase/seed.sql
+supabase/config.jsonc
+*.sql
+package-lock.json

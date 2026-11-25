@@ -3,12 +3,39 @@
   "private": true,
   "description": "CareFlow online booking — Kadam Hospital pilot (static site + Supabase)",
   "scripts": {
+    "dev": "python3 -m http.server 8080",
     "serve": "python3 -m http.server 8080",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npm run lint && npm run test:notify && npm run test:db",
     "test:db": "bash supabase/tests/run_local.sh",
     "test:notify": "node --experimental-strip-types --no-warnings --test tests/notify.test.ts",
     "test:e2e": "node tests/e2e.js http://localhost:8080",
     "seed": "node tools/gen-seed-sql.js",
     "i18n": "node tools/export-i18n.js",
-    "poster": "node tools/make-poster.js"
+    "poster": "node tools/make-poster.js",
+    "db:login": "supabase login",
+    "db:link": "supabase link",
+    "db:push": "supabase db push",
+    "db:seed": "node tools/gen-seed-sql.js && supabase db query --remote -f supabase/seed.sql",
+    "db:start": "supabase start",
+    "db:reset": "node tools/gen-seed-sql.js && supabase db reset",
+    "fn:serve": "supabase functions serve notify-whatsapp",
+    "fn:deploy": "supabase functions deploy notify-whatsapp --no-verify-jwt",
+    "deploy:preview": "netlify deploy --dir .",
+    "deploy": "netlify deploy --prod --dir ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "netlify-cli": "^27.20.1",
+    "playwright": "1.63.0",
+    "prettier": "^3.10.1",
+    "supabase": "^3.4.0"
+  },
+  "engines": {
+    "node": ">=22.6"
   }
 }
